@@ -21,41 +21,40 @@ public class Program
         try
         {
             Log.Information("Starting FruitShelf API");
-
             var builder = WebApplication.CreateBuilder(args);
-
-            // Add services to the container.
-
-            builder.Services.AddSerilog();
-
-            builder.Services.AddControllers();
-            builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
-
-
-            builder.Services.AddTransient<IProductsService, ProductsService>();
-
+            
             var connectionString = builder.Configuration.GetConnectionString(ConfigurationProductsdb);
             if (String.IsNullOrWhiteSpace(connectionString))
             {
                 throw new Exception($"No connection string configured for {ConfigurationProductsdb}");
             }
+            Log.Information("Read connection string");
 
+
+            // Add services to the container.
+
+            //builder.Services.AddSerilog();
+            builder.Services.AddControllers();
+            builder.Services.AddEndpointsApiExplorer();
+            builder.Services.AddSwaggerGen();
+            builder.Services.AddTransient<IProductsService, ProductsService>();
             builder.Services.AddScoped<CorrelationIdMiddleware>();
             builder.Services.AddFruitShelfData(connectionString);
-            builder.Host.UseSerilog();
+            //builder.Host.UseSerilog();
 
+            Log.Information("Building..");
             var app = builder.Build();
 
             app.UseMiddleware<SanitisedErrorHandlingMiddleware>();
             app.UseMiddleware<RequestLoggingMiddleware>();
             app.UseMiddleware<CorrelationIdMiddleware>();
 
-            app.UseSerilogRequestLogging(); // In this demo with also have the example of RequestLoggingMiddleware
+            //app.UseSerilogRequestLogging(); // In this demo with also have the example of RequestLoggingMiddleware
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
+                Log.Information("Adding Development environment features..");
                 SeedDatabaseOnce(app);
 
                 app.UseSwagger();
@@ -68,6 +67,7 @@ public class Program
 
             app.MapControllers();
 
+            Log.Information("Starting FruitShelf API");
             app.Run();
         }
         catch (Exception ex)

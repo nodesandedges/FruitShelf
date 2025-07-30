@@ -99,12 +99,18 @@ C --> D[ProductDataContext]
 ### Building locally
 
 ```bash
-git clone https://github.com/your-org/fruitshelfapi.git
-cd fruitshelfapi/FruitShelf.API
-dotnet restore
+git clone git@github.com:nodesandedges/FruitShelf.git
+cd FruitShelf
 dotnet build
-dotnet ef database update --project ../FruitShelf.Data
-dotnet run
+```
+
+### Database seeding
+```bash
+docker-compose up postgres
+
+dotnet ef database update --project FruitShelf.Data/ --startup-project FruitShelf.API
+
+
 ```
 
 ### Building containers & Run with docker compose
