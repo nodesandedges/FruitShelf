@@ -1,0 +1,31 @@
+﻿version: '3.8'
+
+services:
+  fruitshelf:
+    image: fruitshelf
+    build:
+      context: .
+      dockerfile: FruitShelf.API/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      # this is a simple demo, so leaving credentials here, rather than obtaining from some form of secret store.
+      - ConnectionStrings__ProductsDb=Host=postgres;Port=5432;Database=your_db;Username=your_user;Password=your_password
+    depends_on:
+      - postgres
+    ports:
+      - "5000:8080" # Adjust as needed
+
+  postgres:
+    image: postgres:latest
+    environment:
+      # this is a simple demo, so leaving credentials here, rather than obtaining from some form of secret store.
+      POSTGRES_DB: your_db
+      POSTGRES_USER: your_user
+      POSTGRES_PASSWORD: your_password
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+volumes:
+  pgdata:
