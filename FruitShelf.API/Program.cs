@@ -33,14 +33,14 @@ public class Program
 
             // Add services to the container.
 
-            //builder.Services.AddSerilog();
+            builder.Services.AddSerilog();
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
             builder.Services.AddTransient<IProductsService, ProductsService>();
             builder.Services.AddScoped<CorrelationIdMiddleware>();
             builder.Services.AddFruitShelfData(connectionString);
-            //builder.Host.UseSerilog();
+            builder.Host.UseSerilog();
 
             Log.Information("Building..");
             var app = builder.Build();
@@ -49,7 +49,7 @@ public class Program
             app.UseMiddleware<RequestLoggingMiddleware>();
             app.UseMiddleware<CorrelationIdMiddleware>();
 
-            //app.UseSerilogRequestLogging(); // In this demo with also have the example of RequestLoggingMiddleware
+            app.UseSerilogRequestLogging(); // In this demo with also have the example of RequestLoggingMiddleware
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())

@@ -4,9 +4,6 @@ A lightweight and dockerised .NET 8 Web API demo exposing `products` endpoints w
 
 Portions of this project were assisted or generated using AI tools such as GitHub Copilot or OpenAI ChatGPT, and JetBrains Rider.
 
-
-
-
 ---
 
 ## 📋 Overview
@@ -105,12 +102,14 @@ dotnet build
 ```
 
 ### Database seeding
+
+We run the postgres container, then apply an Entity Framework migration to create the intial table.
 ```bash
 docker-compose up postgres
 
-dotnet ef database update --project FruitShelf.Data/ --startup-project FruitShelf.API
+export DB_CONNECTION_STRING="Host=localhost;Port=5432;Database=your_db;Username=your_user;Password=your_password"
 
-
+dotnet ef database update --project FruitShelf.Data/ 
 ```
 
 ### Building containers & Run with docker compose
@@ -119,6 +118,18 @@ dotnet ef database update --project FruitShelf.Data/ --startup-project FruitShel
 docker-compose build
 docker-compose up
 ```
+Sample HTTP commands to run against the API running in docker compose
+
+[FruitShelf.Api.http](FruitShelf.API/FruitShelf.Api.http)
+
+or using curl
+
+```bash
+curl -X GET --location "http://localhost:5000/api/products/10" \
+    -H "X-Correlation-ID: e7319a6e-899d-413d-9ddb-d1848717bb98" \
+    -H "Accept: application/json"
+```
+
 ## License
 
 This project is licensed under the [MIT License](LICENSE).  
